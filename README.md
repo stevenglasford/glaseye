@@ -12,3 +12,12 @@ This works with my current video camera streams. I am revealing my brand of vide
 Furthermore, this is an opensource thing so feel free to do what ever you want, since you don't need any additional equipment to run this you can use security cameras for longer period of time, thereby reducing cost.
 
 To run this use `python glaseye.py urls.txt` where `urls.txt` is your list of camera streams.
+
+This part of the program was written with ChatGPT 3.5.
+
+dependencies:
+* Python (version 3.6 or higher)
+* OpenCV (cv2)
+* NumPy
+* Requests
+
