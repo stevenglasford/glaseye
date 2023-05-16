@@ -9,6 +9,10 @@ import multiprocessing
 # Load the pre-trained model for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
+# Create a lock for file writing
+file_lock = multiprocessing.Lock()
+
+
 def process_video_stream(video_url):
     # Retrieve the video stream content
     response = requests.get(video_url, stream=True)
@@ -56,9 +60,10 @@ def process_video_stream(video_url):
 
                 # Save the timestamp information
                 timestamp_filename = "timestamps.txt"
-                with open(timestamp_filename, "a") as timestamps_file:
-                    timestamps_file.write(f"Visitor: {face_filename}\n")
-                    timestamps_file.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())}\n\n")
+                with file_lock:
+                    with open(timestamp_filename, "a") as timestamps_file:
+                        timestamps_file.write(f"Visitor: {face_filename}\n")
+                        timestamps_file.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())}\n\n")
 
         # Draw rectangles around the detected faces
         for (x, y, w, h) in faces:
@@ -94,7 +99,6 @@ if __name__ == '__main__':
         process = multiprocessing.Process(target=process_video_stream, args=(url,))
         process.start()
         processes.append(process)
-
     # Wait for all processes to complete
     for process in processes:
         process.join()
