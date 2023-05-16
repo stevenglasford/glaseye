@@ -1,22 +1,14 @@
 import cv2
-import urllib.request
 import argparse
 import os
 import time
-
 
 # Load the pre-trained model for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 def process_video_stream(video_url):
-    # Open the video stream
-    video_stream = urllib.request.urlopen(video_url)
-
-    # Initialize the video capture object
-    video_capture = cv2.VideoCapture()
-
-    # Set the video source as the video stream
-    video_capture.open(video_stream)
+    # Initialize the video capture object with the video URL
+    video_capture = cv2.VideoCapture(video_url)
 
     # Create a directory to save the detected faces
     faces_dir = 'faces'
@@ -28,6 +20,9 @@ def process_video_stream(video_url):
     while True:
         # Read each frame of the video
         ret, frame = video_capture.read()
+
+        if not ret:
+            break
 
         # Convert the frame to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
