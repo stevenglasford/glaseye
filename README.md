@@ -7,3 +7,8 @@ Part 1 of glaseye is facial detection of unique visitors. This part is actually 
 I debated whether I should post this as it seems like cheating, but I think the world should actually be able to use this. 
 
 Background: I have a building that I need to generate a list of unique visitors and save a picture of the unique visitor's face along with a timestamp in UTC time with the person's first face. 
+
+This works with my current video camera streams. I am revealing my brand of video camera, but if the camera is an IP camera it can probably be used with this.
+Furthermore, this is an opensource thing so feel free to do what ever you want, since you don't need any additional equipment to run this you can use security cameras for longer period of time, thereby reducing cost.
+
+To run this use `python glaseye.py urls.txt` where `urls.txt` is your list of camera streams.
