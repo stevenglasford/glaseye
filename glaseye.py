@@ -3,20 +3,22 @@ import urllib.request
 import argparse
 import os
 import time
-import threading
+import requests
+import multiprocessing
 
 # Load the pre-trained model for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 def process_video_stream(video_url):
-    # Open the video stream
-    video_stream = urllib.request.urlopen(video_url)
+    # Retrieve the video stream content
+    response = requests.get(video_url, stream=True)
+    response.raise_for_status()
 
     # Initialize the video capture object
     video_capture = cv2.VideoCapture()
 
-    # Set the video source as the video stream
-    video_capture.open(video_stream)
+    # Set the video source as the video stream content
+    video_capture.open(response.content)
 
     # Create a directory to save the detected faces
     faces_dir = 'faces'
@@ -85,14 +87,14 @@ if __name__ == '__main__':
     with open(url_file_path, 'r') as f:
         urls = f.read().splitlines()
 
-    # Create a thread for each video stream URL
-    threads = []
+    # Create a process for each video stream URL
+    processes = []
     for url in urls:
         print(f"Processing video stream: {url}")
-        thread = threading.Thread(target=process_video_stream, args=(url,))
-        thread.start()
-        threads.append(thread)
+        process = multiprocessing.Process(target=process_video_stream, args=(url,))
+        process.start()
+        processes.append(process)
 
-    # Wait for all threads to complete
-    for thread in threads:
-        thread.join()
+    # Wait for all processes to complete
+    for process in processes:
+        process.join()
