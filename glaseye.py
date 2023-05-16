@@ -1,18 +1,20 @@
 import cv2
-import os
+import urllib.request
 
 # Load the pre-trained model for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-# Initialize the video capture
-video_capture = cv2.VideoCapture(0)  # Set the argument to the video file path if you want to detect faces in a video file
+# URL of the video stream
+video_url = 'your_video_stream_url_here'
 
-# Create a directory to save the detected faces
-output_dir = 'detected_faces'
-os.makedirs(output_dir, exist_ok=True)
+# Open the video stream
+video_stream = urllib.request.urlopen(video_url)
 
-# Initialize a counter for the face images
-face_counter = 0
+# Initialize the video capture object
+video_capture = cv2.VideoCapture()
+
+# Set the video source as the video stream
+video_capture.open(video_stream)
 
 while True:
     # Read each frame of the video
@@ -24,15 +26,9 @@ while True:
     # Detect faces in the frame
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30))
 
-    # Draw rectangles around the detected faces and save each face as a separate image file
+    # Draw rectangles around the detected faces
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-
-        # Save the detected face as an image file
-        face_img = frame[y:y+h, x:x+w]
-        face_filename = os.path.join(output_dir, f"face_{face_counter}.jpg")
-        cv2.imwrite(face_filename, face_img)
-        face_counter += 1
 
     # Display the resulting frame
     cv2.imshow('Video', frame)
